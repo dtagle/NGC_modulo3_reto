@@ -1,0 +1,237 @@
+{
+  "historia": "HU-03",
+  "casos": [
+    {
+      "id": "CP-01",
+      "escenario": "Editar puesto y departamento de un empleado activo",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0015 con id 15, puesto 'Analista', departamento 'Finanzas' y estado 'activo'"
+      ],
+      "pasos": [
+        "Enviar PUT /api/empleados/15 con body {\"puesto\": \"Analista Senior\", \"departamento\": \"Tecnología\"}",
+        "Verificar código de respuesta 200",
+        "Verificar que el cuerpo de la respuesta contiene puesto 'Analista Senior' y departamento 'Tecnología'"
+      ],
+      "datos": {
+        "id": "15",
+        "puesto": "Analista Senior",
+        "departamento": "Tecnología"
+      },
+      "resultado_esperado": "El sistema responde 200 y el empleado EMP-0015 muestra puesto 'Analista Senior' y departamento 'Tecnología'"
+    },
+    {
+      "id": "CP-02",
+      "escenario": "Editar puesto y departamento de un empleado activo",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0015 con id 15, puesto 'Analista', departamento 'Finanzas' y estado 'activo', visible en el directorio"
+      ],
+      "pasos": [
+        "Localizar la fila data-testid='fila-empleado-15' en data-testid='tabla-empleados'",
+        "Hacer clic en data-testid='editar-empleado-15'",
+        "Limpiar y escribir 'Analista Senior' en data-testid='empleado-puesto'",
+        "Seleccionar 'Tecnología' en data-testid='empleado-departamento'",
+        "Hacer clic en data-testid='empleado-guardar'",
+        "Verificar que data-testid='mensaje-exito' se muestra",
+        "Verificar que la fila data-testid='fila-empleado-15' muestra el puesto 'Analista Senior' y el departamento 'Tecnología'"
+      ],
+      "datos": {
+        "id": "15",
+        "puesto": "Analista Senior",
+        "departamento": "Tecnología"
+      },
+      "resultado_esperado": "Se muestra mensaje de éxito y la fila del empleado refleja el nuevo puesto y departamento"
+    },
+    {
+      "id": "CP-03",
+      "escenario": "El número de empleado y el correo no se modifican aunque se envíen en la edición",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0015 con id 15, numero_empleado 'EMP-0015' y correo 'laura.perez@empresa.com'"
+      ],
+      "pasos": [
+        "Enviar PUT /api/empleados/15 con body {\"numero_empleado\": \"EMP-9999\", \"correo\": \"otro@empresa.com\"}",
+        "Verificar código de respuesta 200",
+        "Verificar que el cuerpo de la respuesta conserva numero_empleado 'EMP-0015' y correo 'laura.perez@empresa.com'"
+      ],
+      "datos": {
+        "id": "15",
+        "numero_empleado_enviado": "EMP-9999",
+        "correo_enviado": "otro@empresa.com",
+        "numero_empleado_esperado": "EMP-0015",
+        "correo_esperado": "laura.perez@empresa.com"
+      },
+      "resultado_esperado": "El sistema responde 200 y el empleado conserva su numero_empleado y correo originales"
+    },
+    {
+      "id": "CP-04",
+      "escenario": "Error al editar con un puesto demasiado corto",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0015 con id 15 y estado 'activo'"
+      ],
+      "pasos": [
+        "Enviar PUT /api/empleados/15 con body {\"puesto\": \"A\"}",
+        "Verificar código de respuesta 422",
+        "Verificar que el mensaje de error indica que se corrija el campo 'puesto'"
+      ],
+      "datos": {
+        "id": "15",
+        "puesto": "A"
+      },
+      "resultado_esperado": "El sistema responde 422 indicando que el campo puesto es inválido"
+    },
+    {
+      "id": "CP-05",
+      "escenario": "Error al editar con un puesto demasiado corto",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0015 con id 15 y estado 'activo', visible en el directorio"
+      ],
+      "pasos": [
+        "Hacer clic en data-testid='editar-empleado-15'",
+        "Escribir 'A' en data-testid='empleado-puesto'",
+        "Hacer clic en data-testid='empleado-guardar'",
+        "Verificar que se muestra data-testid='mensaje-error' indicando que el puesto es inválido"
+      ],
+      "datos": {
+        "id": "15",
+        "puesto": "A"
+      },
+      "resultado_esperado": "Se muestra un mensaje de error señalando el campo puesto"
+    },
+    {
+      "id": "CP-06",
+      "escenario": "Error al editar con un departamento no permitido",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0015 con id 15 y estado 'activo'"
+      ],
+      "pasos": [
+        "Enviar PUT /api/empleados/15 con body {\"departamento\": \"Marketing\"}",
+        "Verificar código de respuesta 422",
+        "Verificar que el mensaje de error indica que se corrija el campo 'departamento'"
+      ],
+      "datos": {
+        "id": "15",
+        "departamento": "Marketing"
+      },
+      "resultado_esperado": "El sistema responde 422 indicando que el campo departamento es inválido"
+    },
+    {
+      "id": "CP-07",
+      "escenario": "Error al editar con un departamento no permitido",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0015 con id 15 y estado 'activo', visible en el directorio"
+      ],
+      "pasos": [
+        "Hacer clic en data-testid='editar-empleado-15'",
+        "Seleccionar o escribir 'Marketing' en data-testid='empleado-departamento'",
+        "Hacer clic en data-testid='empleado-guardar'",
+        "Verificar que se muestra data-testid='mensaje-error' indicando que el departamento es inválido"
+      ],
+      "datos": {
+        "id": "15",
+        "departamento": "Marketing"
+      },
+      "resultado_esperado": "Se muestra un mensaje de error señalando el campo departamento"
+    },
+    {
+      "id": "CP-08",
+      "escenario": "Error al intentar editar a un empleado dado de baja",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0020 con id 20 y estado 'baja'"
+      ],
+      "pasos": [
+        "Enviar PUT /api/empleados/20 con body {\"puesto\": \"Gerente\"}",
+        "Verificar código de respuesta 409",
+        "Verificar que el mensaje de error es 'No se puede editar a un empleado dado de baja'"
+      ],
+      "datos": {
+        "id": "20",
+        "puesto": "Gerente"
+      },
+      "resultado_esperado": "El sistema responde 409 con el mensaje 'No se puede editar a un empleado dado de baja'"
+    },
+    {
+      "id": "CP-09",
+      "escenario": "Dar de baja a un empleado activo",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0015 con id 15, estado 'activo' y fecha_ingreso '2022-03-01'"
+      ],
+      "pasos": [
+        "Enviar PUT /api/empleados/15/baja con body {\"fecha_baja\": \"2024-06-15\"}",
+        "Verificar código de respuesta 200",
+        "Verificar que el empleado EMP-0015 tiene estado 'baja' y fecha_baja '2024-06-15'",
+        "Verificar que GET /api/empleados incluye al empleado EMP-0015"
+      ],
+      "datos": {
+        "id": "15",
+        "fecha_baja": "2024-06-15"
+      },
+      "resultado_esperado": "El sistema responde 200, el empleado queda en estado baja con la fecha indicada y sigue apareciendo en el directorio"
+    },
+    {
+      "id": "CP-10",
+      "escenario": "Dar de baja a un empleado activo",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0015 con id 15, estado 'activo' y fecha_ingreso '2022-03-01', visible en el directorio"
+      ],
+      "pasos": [
+        "Hacer clic en data-testid='baja-empleado-15'",
+        "Escribir '2024-06-15' en data-testid='empleado-fecha-baja'",
+        "Hacer clic en data-testid='confirmar-baja'",
+        "Verificar que se muestra data-testid='mensaje-exito'",
+        "Verificar que data-testid='estado-empleado-15' muestra 'Baja'",
+        "Verificar que data-testid='fila-empleado-15' sigue presente en data-testid='tabla-empleados'"
+      ],
+      "datos": {
+        "id": "15",
+        "fecha_baja": "2024-06-15"
+      },
+      "resultado_esperado": "Se muestra mensaje de éxito, el estado del empleado cambia a Baja y la fila sigue visible en el directorio"
+    },
+    {
+      "id": "CP-11",
+      "escenario": "Error al dar de baja con una fecha de baja anterior a la fecha de ingreso",
+      "nivel": "api",
+      "precondiciones": [
+        "Existe el empleado EMP-0021 con id 21, estado 'activo' y fecha_ingreso '2023-01-10'"
+      ],
+      "pasos": [
+        "Enviar PUT /api/empleados/21/baja con body {\"fecha_baja\": \"2022-12-01\"}",
+        "Verificar código de respuesta 422",
+        "Verificar que el mensaje de error indica que se corrija el campo 'fecha_baja'"
+      ],
+      "datos": {
+        "id": "21",
+        "fecha_baja": "2022-12-01"
+      },
+      "resultado_esperado": "El sistema responde 422 indicando que el campo fecha_baja es inválido"
+    },
+    {
+      "id": "CP-12",
+      "escenario": "Error al dar de baja con una fecha de baja anterior a la fecha de ingreso",
+      "nivel": "e2e",
+      "precondiciones": [
+        "Existe el empleado EMP-0021 con id 21, estado 'activo' y fecha_ingreso '2023-01-10', visible en el directorio"
+      ],
+      "pasos": [
+        "Hacer clic en data-testid='baja-empleado-21'",
+        "Escribir '2022-12-01' en data-testid='empleado-fecha-baja'",
+        "Hacer clic en data-testid='confirmar-baja'",
+        "Verificar que se muestra data-testid='mensaje-error' indicando que la fecha de baja es inválida"
+      ],
+      "datos": {
+        "id": "21",
+        "fecha_baja": "2022-12-01"
+      },
+      "resultado_esperado": "Se muestra un mensaje de error señalando el campo fecha_baja"
+    }
+  ]
+}

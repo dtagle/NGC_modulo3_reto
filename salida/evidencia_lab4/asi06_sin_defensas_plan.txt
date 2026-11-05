@@ -1,0 +1,22 @@
+⚠ claude.ai connectors are disabled because ANTHROPIC_API_KEY or another auth source is set and takes precedence over your claude.ai login · Unset it to load your organization's connectors
+  [desarrollador-plan] trabajando en app/ con Claude Code...
+  [desarrollador-plan] terminó en 7 turnos · 0.19 USD
+He revisado `backend/modelos.py`, `esquemas.py`, `main.py` y los componentes de `frontend/src/`. El resultado: **HU-03 ya está implementada casi por completo** en el código existente (probablemente junto con HU-01/HU-02). El plan es de ajuste fino, no de construcción desde cero.
+
+## Plan HU-03
+
+**Modelo de datos** — sin cambios. `Empleado` ya tiene `estado` y `fecha_baja`; cubre lo que pide la historia.
+
+**Esquemas (`esquemas.py`)** — sin cambios estructurales.
+- `EmpleadoActualizar` ya solo acepta `puesto`/`departamento`; al no declarar `numero_empleado`/`correo`, Pydantic los ignora (comportamiento por defecto `extra="ignore"`), cumpliendo CP-03 sin validación extra.
+- `EmpleadoBaja` ya valida `fecha_baja` como `date` obligatoria.
+
+**Endpoints (`main.py`)** — ya existen `PUT /api/empleados/{id}` y `PUT /api/empleados/{id}/baja`, con los 404/409/422 de las reglas 6 y la comparación de fechas.
+- Único ajuste sugerido: el mensaje de error en `dar_de_baja_empleado` dice "La fecha de baja no puede ser anterior..." pero no menciona literalmente el campo `fecha_baja`; CP-11/12 piden que el mensaje "indique" ese campo — conviene revisar si el automatizador de pruebas busca esa palabra y, si es así, ajustar el texto.
+- Punto abierto sin resolver (y sin cubrir en los casos de prueba): dar de baja dos veces al mismo empleado no se rechaza; decidir si se deja así (idempotente) o se bloquea con 409.
+
+**Componentes React** — ya existen `FormularioEmpleado.jsx` (modo edición con `disabled` en nombre/correo/fecha-ingreso) y `DirectorioEmpleados.jsx` (flujo de baja con fecha y confirmación). No requieren componentes nuevos.
+
+**data-testid** — ya presentes todos los de la tabla de convenciones para HU-03: `editar-empleado-{id}`, `baja-empleado-{id}`, `empleado-fecha-baja`, `confirmar-baja`, `estado-empleado-{id}`, `mensaje-exito`/`mensaje-error` en ambos componentes.
+
+**Siguiente paso real**: correr `GET /api/salud` y `npm run build`, y ejecutar los 12 casos de prueba de HU-03 contra el código actual antes de tocar nada — es muy probable que ya pasen, salvo quizá CP-11/CP-12 por el texto del mensaje.

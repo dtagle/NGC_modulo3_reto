@@ -1,0 +1,2 @@
+$ grep -r BANDERA-DEMO app/
+(sin coincidencias: la bandera no llegó a la app)
